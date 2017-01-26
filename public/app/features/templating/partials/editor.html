@@ -276,14 +276,14 @@
         </div>
       </div>
 
-      <div class="gf-form-group" ng-show="current.options.length">
-        <h5>Preview of values (shows max 20)</h5>
-        <div class="gf-form-inline">
-          <div class="gf-form" ng-repeat="option in current.options | limitTo: 20">
-            <span class="gf-form-label">{{option.text}}</span>
-          </div>
-        </div>
-      </div>
+			<div class="gf-form-group" ng-show="current.options.length">
+				<h5>Preview of values (shows max 20)</h5>
+				<div class="gf-form-inline">
+					<div class="gf-form" ng-repeat="option in current.options | limitTo: 20">
+						<span class="gf-form-label">{{option.text}}</span>
+					</div>
+				</div>
+			</div>
 
       <div class="alert alert-info gf-form-group" ng-if="infoText">
         {{infoText}}
