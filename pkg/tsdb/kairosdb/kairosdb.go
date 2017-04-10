@@ -46,7 +46,7 @@ var (
 
 func init() {
 	plog = log.New("tsdb.kairosdb")
-	tsdb.RegisterExecutor("kairosdb", NewKairosDbExecutor)
+	tsdb.RegisterExecutor("grafana-kairosdb-datasource", NewKairosDbExecutor)
 }
 
 func (e *KairosDbExecutor) Execute(ctx context.Context, queries tsdb.QuerySlice, queryContext *tsdb.QueryContext) *tsdb.BatchResult {
