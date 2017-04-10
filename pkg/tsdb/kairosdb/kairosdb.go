@@ -13,8 +13,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"gopkg.in/guregu/null.v3"
-
+	"github.com/grafana/grafana/pkg/components/null"
 	"github.com/grafana/grafana/pkg/log"
 	"github.com/grafana/grafana/pkg/models"
 	"github.com/grafana/grafana/pkg/setting"
@@ -23,8 +22,8 @@ import (
 
 type KairosDbExecutor struct {
 	*models.DataSource
-	MetricParser    *KairosDbMetricParser
-	httpClient *http.Client
+	MetricParser *KairosDbMetricParser
+	httpClient   *http.Client
 }
 
 func NewKairosDbExecutor(datasource *models.DataSource) (tsdb.Executor, error) {
@@ -35,9 +34,9 @@ func NewKairosDbExecutor(datasource *models.DataSource) (tsdb.Executor, error) {
 	}
 
 	return &KairosDbExecutor{
-		DataSource: datasource,
+		DataSource:   datasource,
 		MetricParser: &KairosDbMetricParser{},
-		httpClient: httpClient,
+		httpClient:   httpClient,
 	}, nil
 }
 
@@ -131,10 +130,10 @@ func (e *KairosDbExecutor) parseResponse(query KairosDbQuery, res *http.Response
 		plog.Info("Failed to unmarshal kairos response", "error", err, "status", res.Status, "body", string(body))
 		return nil, err
 	}
-	
-	for  _, val := range data.Queries {
 
-		for _,results := range val.Results{
+	for _, val := range data.Queries {
+
+		for _, results := range val.Results {
 
 			series := tsdb.TimeSeries{
 				Name: results.Name,
@@ -143,7 +142,7 @@ func (e *KairosDbExecutor) parseResponse(query KairosDbQuery, res *http.Response
 			for _, value := range results.Values {
 				timestamp := value[0]
 				series.Points = append(series.Points, tsdb.NewTimePoint(null.FloatFrom(float64(value[1])), timestamp))
-				plog.Info("added series point","series","series")
+				plog.Info("added series point", "series", "series")
 			}
 
 			queryRes.Series = append(queryRes.Series, &series)
@@ -153,4 +152,3 @@ func (e *KairosDbExecutor) parseResponse(query KairosDbQuery, res *http.Response
 	queryResults["A"] = queryRes
 	return queryResults, nil
 }
-
