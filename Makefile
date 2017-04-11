@@ -5,6 +5,8 @@ all: deps build
 deps-go:
 	go run build.go setup
 
+.PHONY: docker
+
 deps-js:
 	yarn install --pure-lockfile --no-progress
 
@@ -30,8 +32,8 @@ run:
 	./bin/grafana-server
 
 docker-deps-js:
-  docker run -v $(CURDIR):/go/src/github.com/grafana/grafana -w /go/src/github.com/grafana/grafana grafana/buildcontainer yarn install --pure-lockfile --no-progress
+	docker run -v $(CURDIR):/go/src/github.com/grafana/grafana -w /go/src/github.com/grafana/grafana grafana/buildcontainer yarn install --pure-lockfile --no-progress
 
 docker:
-  docker run -v $(CURDIR):/go/src/github.com/grafana/grafana -e CIRCLE_BUILD_NUM=$(BUILD_NUMBER) grafana/buildcontainer
-  ./docker-image/build.sh
+	docker run -v $(CURDIR):/go/src/github.com/grafana/grafana -e CIRCLE_BUILD_NUM=$(BUILD_NUMBER) grafana/buildcontainer
+	./docker-image/build.sh

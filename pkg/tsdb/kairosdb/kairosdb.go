@@ -95,7 +95,7 @@ func (e *KairosDbExecutor) createRequest(data KairosDbQuery) (*http.Request, err
 
 	req, err := http.NewRequest(http.MethodPost, u.String(), strings.NewReader(string(postData)))
 	if err != nil {
-		plog.Info("Failed to create request", "error", err)
+		plog.Error("Failed to create request", "error", err)
 		return nil, fmt.Errorf("Failed to create request. error: %v", err)
 	}
 
@@ -119,7 +119,7 @@ func (e *KairosDbExecutor) parseResponse(query KairosDbQuery, res *http.Response
 	}
 
 	if res.StatusCode/100 != 2 {
-		plog.Info("Request failed", "status", res.Status, "body", string(body))
+		plog.Error("Request failed", "status", res.Status, "body", string(body))
 		return nil, fmt.Errorf("Request failed status: %v", res.Status)
 	}
 
@@ -127,7 +127,7 @@ func (e *KairosDbExecutor) parseResponse(query KairosDbQuery, res *http.Response
 	data := KairosDbResponse{}
 	err = json.Unmarshal(body, &data)
 	if err != nil {
-		plog.Info("Failed to unmarshal kairos response", "error", err, "status", res.Status, "body", string(body))
+		plog.Error("Failed to unmarshal kairos response", "error", err, "status", res.Status, "body", string(body))
 		return nil, err
 	}
 
@@ -142,7 +142,7 @@ func (e *KairosDbExecutor) parseResponse(query KairosDbQuery, res *http.Response
 			for _, value := range results.Values {
 				timestamp := value[0]
 				series.Points = append(series.Points, tsdb.NewTimePoint(null.FloatFrom(float64(value[1])), timestamp))
-				plog.Info("added series point", "series", "series")
+				plog.Debug("added series point", "series", "series")
 			}
 
 			queryRes.Series = append(queryRes.Series, &series)

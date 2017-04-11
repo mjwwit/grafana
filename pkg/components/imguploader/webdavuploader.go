@@ -10,6 +10,7 @@ import (
 	"path"
 	"time"
 
+	"github.com/grafana/grafana/pkg/log"
 	"github.com/grafana/grafana/pkg/util"
 )
 
@@ -17,6 +18,7 @@ type WebdavUploader struct {
 	url      string
 	username string
 	password string
+	log      log.Logger
 }
 
 var netTransport = &http.Transport{
@@ -36,6 +38,7 @@ func (u *WebdavUploader) Upload(pa string) (string, error) {
 	url.Path = path.Join(url.Path, util.GetRandomString(20)+".png")
 
 	imgData, err := ioutil.ReadFile(pa)
+	u.log.Debug("Uploading image to WebDav: ", "PUT", url.String())
 	req, err := http.NewRequest("PUT", url.String(), bytes.NewReader(imgData))
 
 	if u.username != "" {
@@ -61,5 +64,6 @@ func NewWebdavImageUploader(url, username, passwrod string) (*WebdavUploader, er
 		url:      url,
 		username: username,
 		password: passwrod,
+		log:      log.New("webdavuploader"),
 	}, nil
 }
